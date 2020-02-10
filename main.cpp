@@ -1,32 +1,42 @@
-#include "opencv2/opencv.hpp"
-#include "iostream"
+#include <opencv2/opencv.hpp>
+#include <opencv2/highgui/highgui.hpp>
+//#include <stdlib.h>
+#include <iostream>
 
-int main(int, char**)
+using namespace cv;
+using namespace std;
+
+int main(int argc, char* argv[])
 {
 	// open the first webcam plugged in the computer
-	cv::VideoCapture camera(0);
-	if (!camera.isOpened())
+	VideoCapture web_camera(0);
+	// this will contain the image from the webcam
+	Mat prev_wc_frame;
+
+	char key;
+
+	if (!web_camera.isOpened())
 	{
-		std::cerr << "ERROR: Could not open camera" << std::endl;
+		cerr << "ERROR: Could not open web_camera" << endl;
 		return 1;
 	}
 
 	// create a window to display the images from the webcam
-	cv::namedWindow("Webcam", cv::WINDOW_AUTOSIZE);
+	namedWindow("Saurons eye", WINDOW_AUTOSIZE);
 
-	// this will contain the image from the webcam
-	cv::Mat frame;
 
-	// capture the next frame from the webcam
-	camera >> frame;
 
 	// display the frame until you press a key
 	while (1)
 	{
+		// capture the  frame from the webcam
+		web_camera >> prev_wc_frame;
 		// show the image on the window
-		cv::imshow("Webcam", frame);
-		// wait (10ms) for a key to be pressed
-		if (cv::waitKey(10) >= 0)
+		imshow("Saurons eye", prev_wc_frame);
+
+		key = waitKey(10);
+
+		if (key == 'q' || key == 'Q')
 			break;
 	}
 	return 0;
