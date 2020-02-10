@@ -1,43 +1,41 @@
-#include <opencv2/opencv.hpp>
-#include <opencv2/highgui/highgui.hpp>
-//#include <stdlib.h>
+#include <opencv2/bioinspired.hpp>
+#include <opencv2/highgui.hpp>
 #include <iostream>
 
 using namespace cv;
-using namespace std;
+using std::cout;
+using std::cerr;
+using std::endl;
 
-int main(int argc, char* argv[])
+int main(int, char**)
 {
-	// open the first webcam plugged in the computer
-	VideoCapture web_camera(0);
-	// this will contain the image from the webcam
-	Mat prev_wc_frame;
+	Mat input_frame;
+	int key;
 
-	char key;
-
-	if (!web_camera.isOpened())
+	cout << "Opening camera..." << endl;
+	VideoCapture capture(0);
+	if (!capture.isOpened())
 	{
-		cerr << "ERROR: Could not open web_camera" << endl;
+		cerr << "ERROR: Can't initialize camera capture" << endl;
 		return 1;
 	}
 
-	// create a window to display the images from the webcam
-	namedWindow("Saurons eye", WINDOW_AUTOSIZE);
-
-
-
-	// display the frame until you press a key
-	while (1)
+	cout << "Frame width: " << capture.get(CAP_PROP_FRAME_WIDTH) << endl;
+	cout << "     height: " << capture.get(CAP_PROP_FRAME_HEIGHT) << endl;
+	cout << endl << "Press 'ESC' to quit" << endl;
+	for (;;)
 	{
-		// capture the  frame from the webcam
-		web_camera >> prev_wc_frame;
-		// show the image on the window
-		imshow("Saurons eye", prev_wc_frame);
-
-		key = waitKey(10);
-
-		if (key == 'q' || key == 'Q')
+		capture >> input_frame;
+		if (input_frame.empty())
+		{
+			cerr << "ERROR: Can't grab camera input_frame." << endl;
+			break;
+		}
+			imshow("Frame", input_frame);
+		key = waitKey(1);
+		if (key == 27/*ESC*/)
 			break;
 	}
+
 	return 0;
 }
