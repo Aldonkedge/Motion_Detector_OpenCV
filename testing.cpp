@@ -9,7 +9,7 @@ using std::cout;
 using std::cerr;
 using std::endl;
 
-/// Global variables
+/// Global variables #1
 
 Mat input_frame, src_gray;
 Mat dst, detected_edges;
@@ -20,6 +20,23 @@ int const max_lowThreshold = 100;
 int ratio = 3;
 int kernel_size = 3;
 char window_name[] = "Edge Map";
+
+/// Global variables #2
+
+int threshold_value = 0;
+int threshold_type = 3;
+int const max_value = 255;
+int const max_type = 4;
+int const max_BINARY_value = 255;
+
+//Mat src, src_gray, dst;
+char window_name2[] = "Threshold Demo";
+
+char trackbar_type[] = "Type: \n 0: Binary \n 1: Binary Inverted \n 2: Truncate \n 3: To Zero \n 4: To Zero Inverted";
+char trackbar_value[] = "Value";
+
+/// Function headers
+void Threshold_Demo( int, void* );
 
 int main(int, char**)
 {
@@ -76,18 +93,30 @@ int main(int, char**)
 				imshow("Retina Parvo", retinaOutput_parvo);
 				imshow("Retina Magno", retinaOutput_magno);
 				imshow("Frame", input_frame);
+
 				/// Show the image
 				/// Reduce noise with a kernel 3x3
 				blur( src_gray, detected_edges, Size(3,3) );
-
 				/// Canny detector
 				Canny( detected_edges, detected_edges, lowThreshold, lowThreshold*ratio, kernel_size );
-
 				/// Using Canny's output as a mask, we display our result
 				dst = Scalar::all(0);
-
 				input_frame.copyTo( dst, detected_edges);
 				imshow( window_name, dst );
+
+				// Convert the image to Gray
+				cvtColor(input_frame, src_gray, COLOR_BGR2GRAY );
+				/// Create a window to display results
+				namedWindow( window_name, WINDOW_AUTOSIZE);
+				/// Create Trackbar to choose type of Threshold
+				createTrackbar(trackbar_type,
+							window_name, &threshold_type,
+							max_type, Threshold_Demo);
+				createTrackbar(trackbar_value,
+							window_name, &threshold_value,
+							max_value, Threshold_Demo);
+				/// Call the function to initialize
+				Threshold_Demo( 0, 0 );
 				key = waitKey(1);
 			}
 		while (key != 27);
@@ -98,4 +127,20 @@ int main(int, char**)
 	}
 	destroyAllWindows();
 	return 0;
+}
+/**
+ * @function Threshold_Demo
+ */
+void Threshold_Demo( int, void* )
+{
+	/* 0: Binary
+	   1: Binary Inverted
+	   2: Threshold Truncated
+	   3: Threshold to Zero
+	   4: Threshold to Zero Inverted
+	 */
+
+	threshold( src_gray, dst, threshold_value, max_BINARY_value,threshold_type );
+
+	imshow( window_name, dst );
 }
