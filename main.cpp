@@ -32,7 +32,6 @@ int main(int, char**)
 	cout << "Frame width: " << capture.get(CAP_PROP_FRAME_WIDTH) << endl;
 	cout << "     height: " << capture.get(CAP_PROP_FRAME_HEIGHT) << endl;
 	cout << endl << "Press 'ESC' to quit" << endl;
-	//TODO крашится после завершения
 	try {
 		do
 			{
