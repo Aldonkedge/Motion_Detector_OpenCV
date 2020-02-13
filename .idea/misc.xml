@@ -18,7 +18,4 @@
       </profile-state>
     </entry>
   </component>
-  <component name="TerminalProjectOptionsProvider">
-    <option name="myStartingDirectory" value="C:\" />
-  </component>
 </project>
